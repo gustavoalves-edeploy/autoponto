@@ -1,0 +1,13 @@
+{
+	"type": "module",
+	"scripts": {
+		"cy:open": "cypress open",
+		"cy:run": "cypress run",
+		"type-check": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@types/node": "^25.2.3",
+		"cypress": "^15.9.0",
+		"typescript": "^5.9.3"
+	}
+}
