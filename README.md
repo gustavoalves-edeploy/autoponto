@@ -1,6 +1,6 @@
 # Autoponto
 
-Automação com Cypress para login e marcação de ponto no sistema LG (login.lg.com.br).
+Automação com Cypress para login e marcação de ponto no sistema LG da e-deploy (login.lg.com.br).
 
 ## Pré-requisitos
 
