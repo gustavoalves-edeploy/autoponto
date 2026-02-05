@@ -31,7 +31,12 @@ describe("Login e bater ponto", () => {
 
     cy.origin("https://prd-pt1.lg.com.br", () => {
       cy.contains("button", "Marcar Ponto", { timeout: 30000 }).click();
+      cy.wait(1000);
       cy.contains("button", "Confirmar").click();
+
+      cy.contains("Marcação realizada com sucesso.", { timeout: 4000 }).should(
+        "be.visible"
+      );
     });
   });
 });
