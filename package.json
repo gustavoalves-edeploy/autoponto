@@ -1,0 +1,10 @@
+{
+	"type": "module",
+	"scripts": {
+		"cy:open": "cypress open",
+		"cy:run": "cypress run"
+	},
+	"devDependencies": {
+		"cypress": "^15.9.0"
+	}
+}
