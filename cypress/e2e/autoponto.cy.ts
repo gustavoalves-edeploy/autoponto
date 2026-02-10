@@ -35,13 +35,13 @@ describe("Login e bater ponto", () => {
     });
 
     cy.origin("https://prd-pt1.lg.com.br", () => {
-      // cy.contains("button", "Marcar Ponto", { timeout: 30000 }).click();
-      // cy.wait(500);
-      // cy.contains("button", "Confirmar").click();
+      cy.contains("button", "Marcar Ponto", { timeout: 30000 }).click();
+      cy.wait(500);
+      cy.contains("button", "Confirmar").click();
 
-      // cy.contains("Marcação realizada com sucesso.", { timeout: 4000 }).should(
-      //   "be.visible",
-      // );
+      cy.contains("Marcação realizada com sucesso.", { timeout: 4000 }).should(
+        "be.visible",
+      );
 
       // Clica no botão "Mostrar todas marcações"
       cy.get('i[title="Mostrar todas marcações"]', { timeout: 3000 })
@@ -66,10 +66,14 @@ describe("Login e bater ponto", () => {
         const dia = pontos[0].timestamp.getDate();
         const currentDateFolder = `${ano}/${mes}/${dia}`;
 
-        cy.writeFile(`pontos/${currentDateFolder}.json`, pontos, {
-          timeout: 1000,
-        });
-        cy.screenshot(currentDateFolder);
+        if (Cypress.env("KEEP_JSON_RECORDS")) {
+          cy.writeFile(`pontos/${currentDateFolder}.json`, pontos, {
+            timeout: 1000,
+          });
+        }
+        if (Cypress.env("KEEP_SCREENSHOTS")) {
+          cy.screenshot(currentDateFolder);
+        }
       });
     });
   });

@@ -23,6 +23,13 @@ As credenciais de acesso são lidas pelo Cypress a partir do arquivo `cypress.co
 1. Abra o arquivo **`cypress.config.js`** na raiz do projeto.
 2. No bloco `e2e.env`, altere os valores de `LOGIN` e `PASSWORD` com suas credenciais:
 
+### Feature flags
+
+Há duas flags implementadas que controlam funcionalidades dentro da aplicação:
+
+1. **KEEP_SCREENSHOTS**: mantém registro em PNG dos pontos batidos para consulta posterior.
+2. **KEEP_JSON_RECORDS**: mantém registro em JSON dos horários batidos até o momento no dia atual para verificação segura.
+
 ```js
 export default defineConfig({
   e2e: {
@@ -30,6 +37,8 @@ export default defineConfig({
     env: {
       LOGIN: "seu.email@empresa.com.br",
       PASSWORD: "sua_senha_aqui",
+      KEEP_SCREENSHOTS: true,
+      KEEP_JSON_RECORDS: true
     },
   },
 });

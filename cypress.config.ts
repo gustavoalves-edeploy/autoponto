@@ -16,7 +16,12 @@ export default defineConfig({
         });
       });
     },
-    env: { LOGIN: "example@example.com", PASSWORD: "Password123" },
+    env: {
+      LOGIN: "example@example.com",
+      PASSWORD: "Password123",
+      KEEP_SCREENSHOTS: true,
+      KEEP_JSON_RECORDS: true,
+    },
   },
   screenshotsFolder: "pontos",
 });
