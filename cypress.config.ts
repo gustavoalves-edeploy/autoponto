@@ -17,8 +17,8 @@ export default defineConfig({
       });
     },
     env: {
-      LOGIN: "example@example.com",
-      PASSWORD: "Password123",
+      LOGIN: "gustavo.alves@e-deploy.com.br",
+      PASSWORD: "C0nnect123?",
       KEEP_SCREENSHOTS: true,
       KEEP_JSON_RECORDS: true,
     },

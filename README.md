@@ -55,6 +55,22 @@ export default defineConfig({
 
 ## Como executar
 
+### 🚀 Script automatizado (Recomendado)
+
+```bash
+# Executa o ponto e mostra informações da jornada
+pnpm run ponto
+```
+
+Este script irá:
+1. ✅ Executar o teste Cypress automaticamente
+2. 📊 Calcular e exibir informações da jornada
+3. ⏰ Mostrar quando a jornada de 8h e 10h encerra
+4. 🍽️ Calcular horários de retorno do almoço (se aplicável)
+5. 🔔 Permitir agendar a próxima execução automática
+
+### Cypress manual
+
 ```bash
 # Abrir o Cypress em modo interativo (recomendado para desenvolvimento)
 pnpm run cy:open
@@ -63,15 +79,65 @@ pnpm run cy:open
 pnpm run cy:run
 ```
 
+## 📊 Informações fornecidas pelo script
+
+### Após o 1º ponto (Entrada)
+- 🕐 Horário que a jornada de 8h encerra
+- 🕐 Horário que a jornada de 10h encerra
+
+### Após o 2º ponto (Saída para almoço)
+- 🍽️ Horário mínimo para retornar (1h de almoço)
+- 🍽️ Horário máximo para retornar (2h de almoço)
+- 🕐 Quando a jornada de 8h encerra
+- 🕐 Quando a jornada de 10h encerra
+- **✨ Opção de agendar o retorno do almoço automaticamente**
+
+### Após o 3º ponto (Retorno do almoço)
+- ⏱️ Tempo de almoço realizado
+- 🕐 Quando a jornada de 8h encerra
+- 🕐 Quando a jornada de 10h encerra
+- **✨ Opção de agendar a saída automaticamente**
+
+### Após o 4º ponto (Saída)
+- ✅ Jornada completa
+
+## ⏰ Agendamento automático
+
+Quando o script oferecer a opção de agendamento:
+
+1. Digite o horário no formato `HH:MM` (ex: `14:00`)
+2. O script ficará em execução e rodará automaticamente no horário agendado
+3. Para cancelar, pressione `Ctrl+C`
+
+**Exemplo de uso:**
+```bash
+$ pnpm run ponto
+
+# Após bater o ponto de saída para almoço...
+🤔 Deseja agendar o retorno do almoço automaticamente?
+   Digite o horário (HH:MM) ou pressione Enter para pular: 14:00
+
+✅ Ponto agendado para 14:00
+📅 Data: 12/02/2026
+
+⏰ O script será executado automaticamente no horário agendado.
+   Para cancelar, pressione Ctrl+C
+```
+
 ## Estrutura do projeto
 
 ```
 autoponto/
+├── bater-ponto.ts      # 🚀 Script principal automatizado
 ├── cypress/
-│   ├── e2e/           # Testes E2E (ex.: autoponto.cy.js)
-│   ├── fixtures/      # Dados estáticos para testes
-│   └── support/       # e2e.js, commands.js (comandos e imports globais)
-├── cypress.config.js  # Configuração do Cypress e credenciais (env)
+│   ├── e2e/
+│   │   └── autoponto.cy.ts  # Teste E2E de marcação de ponto
+│   ├── fixtures/       # Dados estáticos para testes
+│   └── support/        # e2e.js, commands.js (comandos e imports globais)
+├── pontos/             # 📁 Registros de ponto
+│   └── YYYY/MM/DD.json # Arquivo JSON por dia
+├── cypress.config.ts   # Configuração do Cypress e credenciais (env)
+├── tsconfig.json       # Configuração do TypeScript
 └── package.json
 ```
 
