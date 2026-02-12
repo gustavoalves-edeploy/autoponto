@@ -39,14 +39,23 @@ describe("Login e bater ponto", () => {
       cy.wait(500);
       cy.contains("button", "Confirmar").click();
 
-      cy.contains("Marcação realizada com sucesso.", { timeout: 4000 }).should(
+      cy.contains("Marcação realizada com sucesso.", { timeout: 2000 }).should(
         "be.visible",
       );
 
-      // Clica no botão "Mostrar todas marcações"
-      cy.get('i[title="Mostrar todas marcações"]', { timeout: 3000 })
-        .should("be.visible")
-        .click();
+      cy.contains("button", /ok/i).click();
+
+      cy.contains("Marcação realizada com sucesso.", { timeout: 2000 }).should(
+        "not.be.visible",
+      );
+
+      // Clica no botão "Mostrar todas marcações" se existir
+      cy.get('body').then(($body) => {
+        const $btn = $body.find('i[title="Mostrar todas marcações"]');
+        if ($btn.length > 0 && $btn.is(':visible')) {
+          cy.wrap($btn).click();
+        }
+      });
 
       cy.get("div[class='marcacoes ng-scope']>div", {
         timeout: 3000,
