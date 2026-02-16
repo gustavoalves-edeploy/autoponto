@@ -3,6 +3,7 @@ import fs from "fs";
 
 export default defineConfig({
   e2e: {
+    trashAssetsBeforeRuns: false,
     setupNodeEvents(on, _config) {
       on("after:screenshot", (details) => {
         const newPath = details.path.replace(/autoponto\.cy\.ts[\/\\]/, "");

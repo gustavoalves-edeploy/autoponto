@@ -27,7 +27,7 @@ function adicionarMinutos(hora: string, minutos: number): string {
 function calcularDiferencaMinutos(hora1: string, hora2: string): number {
   const [h1, m1] = hora1.split(":").map(Number);
   const [h2, m2] = hora2.split(":").map(Number);
-  return (h2 * 60 + m2) - (h1 * 60 + m1);
+  return h2 * 60 + m2 - (h1 * 60 + m1);
 }
 
 async function agendarProximoPonto(horaRetorno: string) {
@@ -43,7 +43,9 @@ async function agendarProximoPonto(horaRetorno: string) {
 
   console.log(`\n✅ Ponto agendado para ${formatarHora(horarioAgendado)}`);
   console.log(`📅 Data: ${horarioAgendado.toLocaleDateString("pt-BR")}`);
-  console.log(`\n⏰ O script será executado automaticamente no horário agendado.`);
+  console.log(
+    `\n⏰ O script será executado automaticamente no horário agendado.`,
+  );
   console.log(`   Para cancelar, pressione Ctrl+C\n`);
 
   schedule.scheduleJob(horarioAgendado, () => {
@@ -85,10 +87,10 @@ async function main() {
         index === 0
           ? "Entrada"
           : index === 1
-          ? "Saída para almoço"
-          : index === 2
-          ? "Retorno do almoço"
-          : "Saída";
+            ? "Saída para almoço"
+            : index === 2
+              ? "Retorno do almoço"
+              : "Saída";
       console.log(`   ${index + 1}. ${ponto.horario} - ${tipo}`);
     });
 
@@ -97,8 +99,8 @@ async function main() {
 
     if (pontos.length === 1) {
       // Apenas entrada
-      const fimJornada8h = adicionarMinutos(primeiraEntrada, 8 + 1 * 60); // 1h de almoço
-      const fimJornada10h = adicionarMinutos(primeiraEntrada, 10 + 1 * 60); // 1h de almoço
+      const fimJornada8h = adicionarMinutos(primeiraEntrada, (8 + 1) * 60); // 1h de almoço
+      const fimJornada10h = adicionarMinutos(primeiraEntrada, (10 + 1) * 60); // 1h de almoço
 
       console.log("\n📌 Informações:");
       console.log(`   🕐 Jornada de 8h encerra às: ${fimJornada8h}`);
@@ -113,7 +115,7 @@ async function main() {
       // Calcula quanto tempo trabalhou até agora
       const minutosTrabalhadosManha = calcularDiferencaMinutos(
         primeiraEntrada,
-        saidaAlmoco
+        saidaAlmoco,
       );
 
       // Calcula quando encerra 8h (considerando 1h de almoço mínimo)
@@ -122,16 +124,19 @@ async function main() {
 
       // Calcula quando encerra 10h (considerando 1h de almoço mínimo)
       const minutosRestantes10h = 10 * 60 - minutosTrabalhadosManha;
-      const fimJornada10h = adicionarMinutos(retornoMinimo, minutosRestantes10h);
+      const fimJornada10h = adicionarMinutos(
+        retornoMinimo,
+        minutosRestantes10h,
+      );
 
       console.log("\n📌 Informações:");
       console.log(`   🍽️  Retorno do almoço (mínimo): ${retornoMinimo}`);
       console.log(`   🍽️  Retorno do almoço (máximo): ${retornoMaximo}`);
       console.log(
-        `   🕐 Jornada de 8h encerra às: ${fimJornada8h} (se voltar às ${retornoMinimo})`
+        `   🕐 Jornada de 8h encerra às: ${fimJornada8h} (se voltar às ${retornoMinimo})`,
       );
       console.log(
-        `   🕐 Jornada de 10h encerra às: ${fimJornada10h} (se voltar às ${retornoMinimo})`
+        `   🕐 Jornada de 10h encerra às: ${fimJornada10h} (se voltar às ${retornoMinimo})`,
       );
 
       // Pergunta se quer agendar o próximo ponto
@@ -142,7 +147,7 @@ async function main() {
 
       console.log("\n🤔 Deseja agendar o retorno do almoço automaticamente?");
       const resposta = await rl.question(
-        `   Digite o horário (HH:MM) ou pressione Enter para pular: `
+        `   Digite o horário (HH:MM) ou pressione Enter para pular: `,
       );
       rl.close();
 
@@ -159,16 +164,22 @@ async function main() {
       // Calcula tempo trabalhado de manhã e tempo de almoço
       const minutosTrabalhadosManha = calcularDiferencaMinutos(
         primeiraEntrada,
-        saidaAlmoco
+        saidaAlmoco,
       );
-      const minutosAlmoco = calcularDiferencaMinutos(saidaAlmoco, retornoAlmoco);
+      const minutosAlmoco = calcularDiferencaMinutos(
+        saidaAlmoco,
+        retornoAlmoco,
+      );
 
       // Calcula quando encerra 8h e 10h
       const minutosRestantes8h = 8 * 60 - minutosTrabalhadosManha;
       const minutosRestantes10h = 10 * 60 - minutosTrabalhadosManha;
 
       const fimJornada8h = adicionarMinutos(retornoAlmoco, minutosRestantes8h);
-      const fimJornada10h = adicionarMinutos(retornoAlmoco, minutosRestantes10h);
+      const fimJornada10h = adicionarMinutos(
+        retornoAlmoco,
+        minutosRestantes10h,
+      );
 
       console.log("\n📌 Informações:");
       console.log(`   ⏱️  Tempo de almoço: ${minutosAlmoco} minutos`);
@@ -183,7 +194,7 @@ async function main() {
 
       console.log("\n🤔 Deseja agendar a saída automaticamente?");
       const resposta = await rl.question(
-        `   Digite o horário (HH:MM) ou pressione Enter para pular: `
+        `   Digite o horário (HH:MM) ou pressione Enter para pular: `,
       );
       rl.close();
 
