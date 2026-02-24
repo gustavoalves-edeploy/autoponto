@@ -4,7 +4,8 @@
 		"cy:open": "cypress open",
 		"cy:run": "cypress run",
 		"type-check": "tsc --noEmit",
-		"ponto": "tsx bater-ponto.ts"
+		"ponto": "tsx bater-ponto.ts",
+		"status": "tsx bater-ponto.ts status"
 	},
 	"devDependencies": {
 		"@types/node": "^25.2.3",
