@@ -69,6 +69,81 @@ Este script irá:
 4. 🍽️ Calcular horários de retorno do almoço (se aplicável)
 5. 🔔 Permitir agendar a próxima execução automática
 
+---
+
+### 🔍 Consultar status do dia
+
+```bash
+pnpm run status
+```
+
+Exibe um resumo amigável do estado atual da jornada com base nos pontos já registrados, **sem bater um novo ponto**. Útil para verificar rapidamente a situação do dia a qualquer momento.
+
+A mensagem exibida varia conforme o momento:
+
+| Situação | O que é exibido |
+|---|---|
+| Nenhum ponto registrado | Aviso de que a jornada ainda não foi iniciada |
+| Após a entrada | Tempo trabalhado até agora e previsão de encerramento da jornada |
+| No intervalo de almoço | Tempo trabalhado pela manhã, tempo no almoço e horários mínimo/máximo de retorno |
+| Após o retorno do almoço | Tempo total trabalhado, tempo de intervalo e horário previsto de saída |
+| Jornada completa | Tempo total trabalhado e tempo de intervalo |
+
+**Exemplo de saída (durante o almoço):**
+```
+🔍 STATUS DO DIA
+
+  🕐 Hora atual: 13:05
+  ⏰ Pontos registrados:
+     1. 08:30 - Entrada
+     2. 12:10 - Saída para almoço
+
+  🍽️  Você está no seu horário de almoço!
+  ⏱️  Tempo trabalhado pela manhã: 3h40min
+  🕐 Tempo no almoço: 55min
+
+  ⏰ Você pode voltar no mínimo às 13:10
+  ⏰ Você pode voltar no máximo às 14:10
+
+  📊 Previsões (se voltar no horário mínimo):
+     🏁 Jornada de 8h encerra às: 17:30
+     🏁 Jornada de 10h encerra às: 19:30
+```
+
+---
+
+### ⏰ Agendar uma batida de ponto
+
+```bash
+pnpm run agendar -- HH:mm
+```
+
+Agenda uma batida de ponto para um horário específico do dia. O script permanece em execução e dispara o Cypress automaticamente no horário informado. Para cancelar, pressione `Ctrl+C`.
+
+Se o horário informado já tiver passado hoje, o agendamento será feito para o mesmo horário no dia seguinte.
+
+**Exemplos:**
+```bash
+# Agendar para as 17:30
+pnpm run agendar -- 17:30
+
+# Agendar para as 08:00
+pnpm run agendar -- 08:00
+```
+
+**Exemplo de saída:**
+```
+📋 Agendando batida de ponto para 17:30...
+
+✅ Ponto agendado para 17:30
+📅 Data: 24/02/2026
+
+⏰ O script será executado automaticamente no horário agendado.
+   Para cancelar, pressione Ctrl+C
+```
+
+---
+
 ### Cypress manual
 
 ```bash
@@ -100,6 +175,8 @@ pnpm run cy:run
 
 ### Após o 4º ponto (Saída)
 - ✅ Jornada completa
+- ⏱️ Tempo de intervalo realizado
+- 💼 Tempo total trabalhado (descontando o intervalo)
 
 ## ⏰ Agendamento automático
 
@@ -108,21 +185,6 @@ Quando o script oferecer a opção de agendamento:
 1. Digite o horário no formato `HH:MM` (ex: `14:00`)
 2. O script ficará em execução e rodará automaticamente no horário agendado
 3. Para cancelar, pressione `Ctrl+C`
-
-**Exemplo de uso:**
-```bash
-$ pnpm run ponto
-
-# Após bater o ponto de saída para almoço...
-🤔 Deseja agendar o retorno do almoço automaticamente?
-   Digite o horário (HH:MM) ou pressione Enter para pular: 14:00
-
-✅ Ponto agendado para 14:00
-📅 Data: 12/02/2026
-
-⏰ O script será executado automaticamente no horário agendado.
-   Para cancelar, pressione Ctrl+C
-```
 
 ## Estrutura do projeto
 
