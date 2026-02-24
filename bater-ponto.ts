@@ -321,10 +321,33 @@ function status() {
   }
 }
 
+async function agendar(horario: string) {
+  if (!/^\d{2}:\d{2}$/.test(horario)) {
+    console.error("❌ Formato inválido! Use o formato HH:mm (ex: 14:30)");
+    process.exit(1);
+  }
+
+  const [horas, minutos] = horario.split(":").map(Number);
+  if (horas < 0 || horas > 23 || minutos < 0 || minutos > 59) {
+    console.error("❌ Horário inválido! Horas devem ser 00-23 e minutos 00-59.");
+    process.exit(1);
+  }
+
+  console.log(`\n📋 Agendando batida de ponto para ${horario}...`);
+  await agendarProximoPonto(horario);
+}
+
 const comando = process.argv[2];
 
 if (comando === "status") {
   status();
+} else if (comando === "agendar") {
+  const horario = process.argv[3];
+  if (!horario) {
+    console.error("❌ Informe o horário! Uso: npm run agendar -- HH:mm");
+    process.exit(1);
+  }
+  agendar(horario);
 } else {
   main();
 }
