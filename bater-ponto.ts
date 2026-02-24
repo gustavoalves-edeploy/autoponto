@@ -6,7 +6,7 @@ import { createInterface } from "readline/promises";
 import schedule from "node-schedule";
 
 interface Ponto {
-  horario: string;
+  hourMin: string;
   timestamp: string;
 }
 
@@ -54,7 +54,7 @@ async function agendarProximoPonto(horaRetorno: string) {
   });
 
   // Mantém o processo rodando
-  await new Promise(() => {});
+  await new Promise(() => { });
 }
 
 async function main() {
@@ -91,11 +91,11 @@ async function main() {
             : index === 2
               ? "Retorno do almoço"
               : "Saída";
-      console.log(`   ${index + 1}. ${ponto.horario} - ${tipo}`);
+      console.log(`   ${index + 1}. ${ponto.hourMin} - ${tipo}`);
     });
 
     // Calcula informações baseadas na quantidade de pontos
-    const primeiraEntrada = pontos[0].horario;
+    const primeiraEntrada = pontos[0].hourMin;
 
     if (pontos.length === 1) {
       // Apenas entrada
@@ -108,7 +108,7 @@ async function main() {
       console.log(`   💡 OBS: As previsões consideram 1h de almoço.`);
     } else if (pontos.length === 2) {
       // Entrada + Saída para almoço
-      const saidaAlmoco = pontos[1].horario;
+      const saidaAlmoco = pontos[1].hourMin;
       const retornoMinimo = adicionarMinutos(saidaAlmoco, 60); // 1h de almoço
       const retornoMaximo = adicionarMinutos(saidaAlmoco, 120); // 2h de almoço
 
@@ -139,27 +139,25 @@ async function main() {
         `   🕐 Jornada de 10h encerra às: ${fimJornada10h} (se voltar às ${retornoMinimo})`,
       );
 
-      // Pergunta se quer agendar o próximo ponto
-      const rl = createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
+      // // Pergunta se quer agendar o próximo ponto
+      // const rl = createInterface({
+      //   input: process.stdin,
+      //   output: process.stdout,
+      // });
 
-      console.log("\n🤔 Deseja agendar o retorno do almoço automaticamente?");
-      const resposta = await rl.question(
-        `   Digite o horário (HH:MM) ou pressione Enter para pular: `,
-      );
-      rl.close();
+      // console.log("\n🤔 Deseja agendar o retorno do almoço automaticamente?");
+      // const resposta = await rl.question(
+      //   `   Digite o horário (HH:MM) ou pressione Enter para pular: `,
+      // );
+      // rl.close();
 
-      if (resposta.trim()) {
-        await agendarProximoPonto(resposta.trim());
-      } else {
-        console.log("\n✅ Ponto batido com sucesso! Até a próxima! 👋\n");
-      }
+      console.log(`Seu ponto de retorno do almoço será batido automaticamente às ${retornoMinimo}`);
+
+      await agendarProximoPonto(retornoMinimo);
     } else if (pontos.length === 3) {
       // Entrada + Saída almoço + Retorno almoço
-      const saidaAlmoco = pontos[1].horario;
-      const retornoAlmoco = pontos[2].horario;
+      const saidaAlmoco = pontos[1].hourMin;
+      const retornoAlmoco = pontos[2].hourMin;
 
       // Calcula tempo trabalhado de manhã e tempo de almoço
       const minutosTrabalhadosManha = calcularDiferencaMinutos(

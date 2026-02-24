@@ -1,5 +1,5 @@
 interface Ponto {
-  horario: string;
+  hourMin: string;
   timestamp: Date;
 }
 
@@ -39,20 +39,20 @@ describe("Login e bater ponto", () => {
       cy.wait(500);
       cy.contains("button", "Confirmar").click();
 
-      cy.contains("Marcação realizada com sucesso.", { timeout: 2000 }).should(
+      cy.contains("Marcação realizada com sucesso.", { timeout: 10000 }).should(
         "be.visible",
       );
 
       cy.contains("button", /ok/i).click();
 
-      cy.contains("Marcação realizada com sucesso.", { timeout: 2000 }).should(
+      cy.contains("Marcação realizada com sucesso.", { timeout: 10000 }).should(
         "not.be.visible",
       );
 
       // Clica no botão "Mostrar todas marcações" se existir
-      cy.get('body').then(($body) => {
+      cy.get("body").then(($body) => {
         const $btn = $body.find('i[title="Mostrar todas marcações"]');
-        if ($btn.length > 0 && $btn.is(':visible')) {
+        if ($btn.length > 0 && $btn.is(":visible")) {
           cy.wrap($btn).click();
         }
       });
@@ -61,13 +61,13 @@ describe("Login e bater ponto", () => {
         timeout: 3000,
       }).then((marcacoes) => {
         const pontos: Ponto[] = marcacoes.toArray().map((marcacao) => {
-          const horario = marcacao.querySelector("span")?.textContent || "";
-          const [horas, minutos] = horario.split(":").map(Number);
+          const hourMin = marcacao.querySelector("span")?.textContent || "";
+          const [horas, minutos] = hourMin.split(":").map(Number);
 
           const timestamp = new Date();
           timestamp.setHours(horas, minutos, 0, 0);
 
-          return { horario, timestamp };
+          return { hourMin, timestamp };
         });
 
         const ano = pontos[0].timestamp.getFullYear();
