@@ -66,8 +66,7 @@ async function agendarProximoPonto(horaRetorno: string) {
   console.log(`   Para cancelar, pressione Ctrl+C\n`);
 
   schedule.scheduleJob(horarioAgendado, () => {
-    console.log(`\n🔔 Executando ponto agendado...`);
-    main();
+    void executarPontoEExibirStatus();
   });
 
   // Mantém o processo rodando
@@ -75,135 +74,21 @@ async function agendarProximoPonto(horaRetorno: string) {
 }
 
 async function main() {
-  try {
-    console.log("🚀 Executando teste Cypress...\n");
+  execSync("npx cypress run --spec cypress/e2e/autoponto.cy.ts", {
+    stdio: "pipe",
+  });
 
-    // Executa o teste Cypress
-    execSync("npx cypress run --spec cypress/e2e/autoponto.cy.ts", {
-      stdio: "inherit",
-    });
+  const caminhoJson = getCaminhoJsonHoje();
+  const pontos = lerPontosHoje();
 
-    const caminhoJson = getCaminhoJsonHoje();
-    const pontos = lerPontosHoje();
-
-    if (!pontos) {
-      console.error(`❌ Arquivo ${caminhoJson} não encontrado!`);
-      process.exit(1);
-    }
-
-    console.log("\n📊 RESUMO DA JORNADA\n");
-    console.log("⏰ Pontos batidos:");
-    pontos.forEach((ponto, index) => {
-      const tipo =
-        index === 0
-          ? "Entrada"
-          : index === 1
-            ? "Saída para almoço"
-            : index === 2
-              ? "Retorno do almoço"
-              : "Saída";
-      console.log(`   ${index + 1}. ${ponto.hourMin} - ${tipo}`);
-    });
-
-    // Calcula informações baseadas na quantidade de pontos
-    const primeiraEntrada = pontos[0].hourMin;
-
-    if (pontos.length === 1) {
-      // Apenas entrada
-      const fimJornada8h = adicionarMinutos(primeiraEntrada, (8 + 1) * 60); // 1h de almoço
-      const fimJornada10h = adicionarMinutos(primeiraEntrada, (10 + 1) * 60); // 1h de almoço
-
-      console.log("\n📌 Informações:");
-      console.log(`   🕐 Jornada de 8h encerra às: ${fimJornada8h}`);
-      console.log(`   🕐 Jornada de 10h encerra às: ${fimJornada10h}`);
-      console.log(`   💡 OBS: As previsões consideram 1h de almoço.`);
-    } else if (pontos.length === 2) {
-      // Entrada + Saída para almoço
-      const saidaAlmoco = pontos[1].hourMin;
-      const retornoMinimo = adicionarMinutos(saidaAlmoco, 60); // 1h de almoço
-      const retornoMaximo = adicionarMinutos(saidaAlmoco, 120); // 2h de almoço
-
-      // Calcula quanto tempo trabalhou até agora
-      const minutosTrabalhadosManha = calcularDiferencaMinutos(
-        primeiraEntrada,
-        saidaAlmoco,
-      );
-
-      // Calcula quando encerra 8h (considerando 1h de almoço mínimo)
-      const minutosRestantes8h = 8 * 60 - minutosTrabalhadosManha;
-      const fimJornada8h = adicionarMinutos(retornoMinimo, minutosRestantes8h);
-
-      // Calcula quando encerra 10h (considerando 1h de almoço mínimo)
-      const minutosRestantes10h = 10 * 60 - minutosTrabalhadosManha;
-      const fimJornada10h = adicionarMinutos(
-        retornoMinimo,
-        minutosRestantes10h,
-      );
-
-      console.log("\n📌 Informações:");
-      console.log(`   🍽️  Retorno do almoço (mínimo): ${retornoMinimo}`);
-      console.log(`   🍽️  Retorno do almoço (máximo): ${retornoMaximo}`);
-      console.log(
-        `   🕐 Jornada de 8h encerra às: ${fimJornada8h} (se voltar às ${retornoMinimo})`,
-      );
-      console.log(
-        `   🕐 Jornada de 10h encerra às: ${fimJornada10h} (se voltar às ${retornoMinimo})`,
-      );
-
-      console.log(`Seu ponto de retorno do almoço será batido automaticamente às ${retornoMinimo}`);
-
-      await agendarProximoPonto(retornoMinimo);
-    } else if (pontos.length === 3) {
-      // Entrada + Saída almoço + Retorno almoço
-      const saidaAlmoco = pontos[1].hourMin;
-      const retornoAlmoco = pontos[2].hourMin;
-
-      // Calcula tempo trabalhado de manhã e tempo de almoço
-      const minutosTrabalhadosManha = calcularDiferencaMinutos(
-        primeiraEntrada,
-        saidaAlmoco,
-      );
-      const minutosAlmoco = calcularDiferencaMinutos(
-        saidaAlmoco,
-        retornoAlmoco,
-      );
-
-      // Calcula quando encerra 8h e 10h
-      const minutosRestantes8h = 8 * 60 - minutosTrabalhadosManha;
-      const minutosRestantes10h = 10 * 60 - minutosTrabalhadosManha;
-
-      const fimJornada8h = adicionarMinutos(retornoAlmoco, minutosRestantes8h);
-      const fimJornada10h = adicionarMinutos(
-        retornoAlmoco,
-        minutosRestantes10h,
-      );
-
-      console.log("\n📌 Informações:");
-      console.log(`   ⏱️  Tempo de almoço: ${minutosAlmoco} minutos`);
-      console.log(`   🕐 Jornada de 8h encerra às: ${fimJornada8h}`);
-      console.log(`   🕐 Jornada de 10h encerra às: ${fimJornada10h}`);
-
-      console.log("\n✅ Ponto batido com sucesso! Até a próxima! 👋\n");
-    } else {
-      // 4 pontos ou mais - jornada completa
-      const saidaAlmoco = pontos[1].hourMin;
-      const retornoAlmoco = pontos[2].hourMin;
-      const saida = pontos[3].hourMin;
-
-      const minutosManha = calcularDiferencaMinutos(primeiraEntrada, saidaAlmoco);
-      const minutosTarde = calcularDiferencaMinutos(retornoAlmoco, saida);
-      const totalMinutosTrabalhados = minutosManha + minutosTarde;
-      const minutosIntervalo = calcularDiferencaMinutos(saidaAlmoco, retornoAlmoco);
-
-      console.log("\n📌 Informações:");
-      console.log(`   ⏱️  Tempo de intervalo: ${formatarMinutosHumano(minutosIntervalo)}`);
-      console.log(`   💼 Tempo total trabalhado: ${formatarMinutosHumano(totalMinutosTrabalhados)}`);
-      console.log("\n✅ Jornada completa! Bom descanso! 😴\n");
-    }
-  } catch (error) {
-    console.error("❌ Erro ao executar:", error);
-    process.exit(1);
+  if (!pontos) {
+    throw new Error(`Arquivo ${caminhoJson} não encontrado.`);
   }
+}
+
+async function executarPontoEExibirStatus() {
+  await main();
+  status();
 }
 
 function status() {
@@ -337,17 +222,29 @@ async function agendar(horario: string) {
   await agendarProximoPonto(horario);
 }
 
-const comando = process.argv[2];
+const command = process.argv[2];
 
-if (comando === "status") {
-  status();
-} else if (comando === "agendar") {
-  const horario = process.argv[3];
-  if (!horario) {
-    console.error("❌ Informe o horário! Uso: npm run agendar -- HH:mm");
-    process.exit(1);
+async function bootstrap() {
+  if (command === "status") {
+    status();
+    return;
   }
-  agendar(horario);
-} else {
-  main();
+
+  if (command === "agendar") {
+    const horario = process.argv[3];
+    if (!horario) {
+      throw new Error("Informe o horário. Uso: npm run agendar -- HH:mm");
+    }
+    await agendar(horario);
+    return;
+  }
+
+  await executarPontoEExibirStatus();
 }
+
+bootstrap().catch((error) => {
+  const message =
+    error instanceof Error ? error.message : "Erro inesperado ao executar comando.";
+  console.error(`❌ ${message}`);
+  process.exit(1);
+});
