@@ -109,6 +109,7 @@ function status() {
   console.log(`  🕐 Hora atual: ${horaAtual}`);
   console.log("  ⏰ Pontos registrados:");
   pontos.forEach((ponto, index) => {
+    const emoji = index % 2 === 0 ? "🟢" : "🔴";
     const tipo =
       index === 0
         ? "Entrada"
@@ -117,7 +118,7 @@ function status() {
           : index === 2
             ? "Retorno do almoço"
             : "Saída";
-    console.log(`     ${index + 1}. ${ponto.hourMin} - ${tipo}`);
+    console.log(`     ${index + 1}. ${emoji} ${ponto.hourMin} - ${tipo}`);
   });
   console.log("");
 
