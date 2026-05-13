@@ -6,7 +6,8 @@
 		"type-check": "tsc --noEmit",
 		"ponto": "tsx bater-ponto.ts",
 		"status": "tsx bater-ponto.ts status",
-		"agendar": "tsx bater-ponto.ts agendar"
+		"agendar": "tsx bater-ponto.ts agendar",
+		"historico": "tsx bater-ponto.ts historico"
 	},
 	"devDependencies": {
 		"@types/node": "^25.2.3",

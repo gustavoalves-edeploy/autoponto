@@ -20,7 +20,7 @@ export default defineConfig({
     env: {
       LOGIN: "gustavo.alves@e-deploy.com.br",
       PASSWORD: "C0nnect123?",
-      KEEP_SCREENSHOTS: true,
+      KEEP_SCREENSHOTS: false,
       KEEP_JSON_RECORDS: true,
     },
   },
