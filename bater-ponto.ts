@@ -257,7 +257,7 @@ function lerHistoricoCompleto(): DiaHistorico[] {
         } catch {
           continue;
         }
-        if (!Array.isArray(pontos) || pontos.length === 0) continue;
+        if (!Array.isArray(pontos)) continue;
 
         const dataIso = `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`;
         const dataObj = new Date(`${dataIso}T12:00:00`);
@@ -269,7 +269,9 @@ function lerHistoricoCompleto(): DiaHistorico[] {
         let minutosAlmoco: number | null = null;
         let jornadaCompleta = false;
 
-        if (pontos.length >= 4) {
+        if (pontos.length === 0) {
+          minutosTrabalhados = 0;
+        } else if (pontos.length >= 4) {
           const manha = calcularDiferencaMinutos(
             pontos[0].hourMin,
             pontos[1].hourMin,
@@ -536,6 +538,7 @@ function gerarHtmlHistorico(dias: DiaHistorico[]): string {
   }
 
   function statusInfo(d) {
+    if (d.pontos.length === 0) return { label: "Faltou", cls: "badge-incomplete" };
     if (d.jornadaCompleta) return { label: "Completa", cls: "badge-ok" };
     if (d.pontos.length === 3) return { label: "Tarde", cls: "badge-warn" };
     if (d.pontos.length === 2) return { label: "Almoço", cls: "badge-warn" };
